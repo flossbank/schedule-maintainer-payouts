@@ -88,6 +88,22 @@ test.before(async (t) => {
     }]
   })
   t.context.userIdWithJustOnePayout = userId5
+
+  const { insertedId: userId6 } = await t.context.Mongo.db.collection('users').insertOne({
+    name: 'russia',
+    payoutInfo: {
+      ilpPointer: 'test-ilp-pointer'
+    },
+    payouts: [{
+      id: 'aaaaaaaaaaa2',
+      amount: 150,
+      donationIds: ['bbbbbbbbbbbb'],
+      adIds: ['dddddddddddd'],
+      timestamp: 123456,
+      paid: true
+    }]
+  })
+  t.context.userIdWithPaidPayouts = userId6
 })
 
 test.after(async (t) => {

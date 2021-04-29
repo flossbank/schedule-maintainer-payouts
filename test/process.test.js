@@ -99,6 +99,22 @@ test.before(async (t) => {
     }]
   })
   t.context.userIdWithJustOnePayout = userId5
+
+  const { insertedId: userId6 } = await t.context.Mongo.db.collection('users').insertOne({
+    name: 'russia',
+    payoutInfo: {
+      ilpPointer: 'test-ilp-pointer'
+    },
+    payouts: [{
+      id: 'aaaaaaaaaaa2',
+      amount: 150,
+      donationIds: ['bbbbbbbbbbbb'],
+      adIds: ['dddddddddddd'],
+      timestamp: 123456,
+      paid: true
+    }]
+  })
+  t.context.userIdWithOnlyPaidPayouts = userId6
 })
 
 test.after(async (t) => {
@@ -116,13 +132,11 @@ test.only('should find maintainers with payouts and send sqs messages successful
   // t.context.userIdWithPayoutsAndIlp should have a payout event sent with TWO payout objects, since one of
   // the three is paid: true
   t.deepEqual(JSON.parse(sqsCalls[0].args[0].MessageBody), {
-    maintainerId: t.context.userIdWithPayoutsAndIlp.toString(),
-    pendingPayoutIds: ['aaaaaaaaaaaa', 'aaaaaaaaaaa1']
+    maintainerId: t.context.userIdWithPayoutsAndIlp.toString()
   })
 
   // t.context.userIdWithJustOnePayout should have a payout event sent for their one payout
   t.deepEqual(JSON.parse(sqsCalls[1].args[0].MessageBody), {
-    maintainerId: t.context.userIdWithJustOnePayout.toString(),
-    pendingPayoutIds: ['aaaaaaaaaaa2']
+    maintainerId: t.context.userIdWithJustOnePayout.toString()
   })
 })
