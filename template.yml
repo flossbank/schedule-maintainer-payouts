@@ -17,7 +17,10 @@ Resources:
         StartScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0 1 * * *)
+            Name: MaintainerPayoutSchedule
+            Description: Every day at 1 am
+            Enabled: true
+            Schedule: cron(0 1 * * ? *)
       Policies:
         - AmazonDynamoDBFullAccess
         - Statement:
