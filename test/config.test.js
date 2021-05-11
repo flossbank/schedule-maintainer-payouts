@@ -28,13 +28,8 @@ test('getMongoUri decrypts with kms and caches result', async (t) => {
   t.true(config.kms.decrypt.notCalled)
 })
 
-test('getDistributeMaintainerPayoutQueueUrl decrypts with kms and caches result', async (t) => {
+test('getDistributeMaintainerPayoutQueueUrl reads from env', async (t) => {
   const { config } = t.context
-  process.env.DISTRIBUTE_MAINTAINER_PAYOUT_QUEUE_URL = Buffer.from('abc').toString('base64')
-  t.is(await config.getDistributeMaintainerPayoutQueueUrl(), 'abc')
-  t.true(config.kms.decrypt.calledOnce)
-  config.kms.decrypt.resetHistory()
-
-  t.is(await config.getDistributeMaintainerPayoutQueueUrl(), 'abc')
-  t.true(config.kms.decrypt.notCalled)
+  process.env.DISTRIBUTE_MAINTAINER_PAYOUT_QUEUE_URL = 'dmpqu'
+  t.is(config.getDistributeMaintainerPayoutQueueUrl(), 'dmpqu')
 })
